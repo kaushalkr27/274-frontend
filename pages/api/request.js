@@ -1,4 +1,4 @@
-import config from "@/config";
+import config from '../../config'
 
 const fetcher = async (endpoint, params = {}) => {
   const res = await fetch(config.baseUrl + endpoint, {
