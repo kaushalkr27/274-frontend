@@ -272,6 +272,7 @@ function Dashboard() {
                                             {allProducts.map((item) => {
                                                 return (
                                                     <option
+                                                        key={item.product_id}
                                                         value={item.product_id}
                                                     >
                                                         {item.product_name}
