@@ -30,6 +30,8 @@ function Dashboard() {
     const [selectedUserId, setSelectedUserId] = useState('');
     const [res, setRes] = useState(null);
     const [respo, setRespo] = useState('Please enter details and submit.');
+    const [ordersByHour, setOrdersByHour] = useState([]);
+    const [ordersByWeek, setOrdersByWeek] = useState([]);
 
     useEffect(() => {
         if (res == null) {
@@ -55,6 +57,24 @@ function Dashboard() {
                     Authorization: token,
                 },
             });
+            const responseForOrdersByHour = await fetcher(
+                '/get-orders-by-hour',
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: token,
+                    },
+                }
+            );
+            const responseForOrdersByWeek = await fetcher(
+                '/get-orders-by-week',
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: token,
+                    },
+                }
+            );
             const responseForTopReorders = await fetcher('/reorders', {
                 method: 'GET',
                 headers: {
@@ -76,8 +96,14 @@ function Dashboard() {
             if (responseForTopReorders.status == 200) {
                 setTopReorders(responseForTopReorders.data);
             }
+            if (responseForOrdersByWeek.status == 200) {
+                setOrdersByWeek(responseForOrdersByWeek.data);
+            }
             if (responseForAllProducts.status == 200) {
                 setAllProducts(responseForAllProducts.data);
+            }
+            if (responseForOrdersByHour.status == 200) {
+                setOrdersByHour(responseForOrdersByHour.data);
             }
             dispatch({ type: SET_IS_LOADING, payload: false });
         }
@@ -213,6 +239,88 @@ function Dashboard() {
                                         <Legend />
                                         <Bar
                                             dataKey="proportion_reordered"
+                                            fill="#7C54D5"
+                                            legendType="none"
+                                        />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <div
+                                style={{ height: '400px' }}
+                                className="ml-2 shadow-lg w-1/2 mt-10 flex flex-col justify-center items-center border-2 border-solid border-gray p-4 rounded-lg"
+                            >
+                                <div className="text-xl font-bold">
+                                    Orders by Hour of Day
+                                </div>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        width={500}
+                                        height={300}
+                                        data={ordersByHour}
+                                        margin={{
+                                            top: 5,
+                                            right: 30,
+                                            left: 20,
+                                            bottom: 5,
+                                        }}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis
+                                            dataKey="order_hour_of_day"
+                                            textAnchor="end"
+                                            sclaeToFit="true"
+                                            verticalAnchor="start"
+                                            // angle="-25"
+                                            interval={0}
+                                        />
+                                        <YAxis domain={['auto', 'auto']} />
+                                        {/* dataKey="count" */}
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar
+                                            dataKey="count"
+                                            fill="#7C54D5"
+                                            legendType="none"
+                                        />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div
+                                style={{ height: '400px' }}
+                                className="ml-2 shadow-lg w-1/2 mt-10 flex flex-col justify-center items-center border-2 border-solid border-gray p-4 rounded-lg"
+                            >
+                                <div className="text-xl font-bold">
+                                    Orders by Day of the Week
+                                </div>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        width={500}
+                                        height={300}
+                                        data={ordersByWeek}
+                                        margin={{
+                                            top: 5,
+                                            right: 30,
+                                            left: 20,
+                                            bottom: 5,
+                                        }}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis
+                                            dataKey="order_dow"
+                                            textAnchor="end"
+                                            sclaeToFit="true"
+                                            verticalAnchor="start"
+                                            // angle="-25"
+                                            interval={0}
+                                        />
+                                        <YAxis domain={['auto', 'auto']} />
+                                        {/* dataKey="count" */}
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar
+                                            dataKey="count"
                                             fill="#7C54D5"
                                             legendType="none"
                                         />
